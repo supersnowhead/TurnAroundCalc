@@ -12,10 +12,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const logoImg = document.getElementById("logoImg");
     if (this.checked) {
       body.classList.add("dark-mode");
-      logoImg.src = "logo_dark.jpg";
+      logoImg.src = "logo_dark.jpg"; // Use your dark-mode logo
     } else {
       body.classList.remove("dark-mode");
-      logoImg.src = "logo_light.jpg";
+      logoImg.src = "logo_light.jpg"; // Use your light-mode logo
     }
   });
 });
@@ -58,7 +58,7 @@ function generateSchedule() {
   const dayCount = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
   let weekendCount = 0;
 
-  // Loop through trip days
+  // Loop through each day in the trip
   for (let i = 0; i < dayCount; i++) {
     const currentDate = new Date(start.getTime());
     currentDate.setDate(start.getDate() + i);
@@ -68,13 +68,18 @@ function generateSchedule() {
     const d = String(currentDate.getDate()).padStart(2, "0");
     const dateKey = `${y}-${m}-${d}`;
 
+    // Fallback if dateMapping doesn't have the date
     let dayOfWeek = dateMapping[dateKey] || getDayOfWeek(currentDate);
+
+    // Check if it's a weekend
     if (dayOfWeek === "Sat" || dayOfWeek === "Sun") {
       weekendCount++;
     }
 
+    // Code: T on first & last day, otherwise S
     const code = (i === 0 || i === dayCount - 1) ? "T" : "S";
 
+    // Build a table row
     const row = document.createElement("tr");
     const dayCell = document.createElement("td");
     dayCell.textContent = dayOfWeek;
@@ -97,15 +102,16 @@ function generateSchedule() {
   } else if (dayCount > 13) {
     turnaroundPercentValue = 0.3333;
   }
+
   const turnaroundDaysInitial = dayCount * turnaroundPercentValue;
   const additionalTurnaround = 0.25 * weekendCount;
   const finalTurnaroundDaysNotRounded = turnaroundDaysInitial + additionalTurnaround;
   const finalTurnaroundDaysRounded = Math.round(finalTurnaroundDaysNotRounded);
   const totalTurnaroundDays = finalTurnaroundDaysRounded;
 
-  // Weekend Bonus Rate: Static 25% if any weekend exists, otherwise 0%
+  // Weekend Bonus Rate: 25% if weekendCount > 0, else 0%
   const weekendBonusRate = weekendCount > 0 ? 25 : 0;
-  // Weekend Bonus Contribution: Calculated as percentage of total turnaround days contributed by the weekend bonus.
+  // Weekend Bonus Contribution: % of total turnaround days from the weekend bonus
   let weekendBonusContribution = 0;
   if (finalTurnaroundDaysNotRounded > 0) {
     weekendBonusContribution = ((additionalTurnaround / finalTurnaroundDaysNotRounded) * 100).toFixed(2);
@@ -117,17 +123,20 @@ function generateSchedule() {
   document.getElementById("totalTurnaroundDays").textContent = totalTurnaroundDays;
 
   // Update Current Date Model Display
-  document.getElementById("turnaroundPercent").textContent = (turnaroundPercentValue * 100).toFixed(2) + "%";
+  document.getElementById("turnaroundPercent").textContent =
+    (turnaroundPercentValue * 100).toFixed(2) + "%";
   document.getElementById("modelWeekendDays").textContent = weekendCount;
   document.getElementById("modelTripDays").textContent = dayCount;
-  document.getElementById("turnaroundDaysInitial").textContent = turnaroundDaysInitial.toFixed(2);
-  document.getElementById("turnaroundDaysNotRounded").textContent = finalTurnaroundDaysNotRounded.toFixed(2);
-  // Insert the new rows in order:
-  // Update Weekend Bonus Rate (Static)
-  document.getElementById("weekendBonusRate").textContent = weekendBonusRate + "%";
-  // Update Weekend Bonus Contribution (%)
-  document.getElementById("weekendBonusPercent").textContent = weekendBonusContribution + "%";
-  document.getElementById("turnaroundDaysRounded").textContent = finalTurnaroundDaysRounded;
+  document.getElementById("turnaroundDaysInitial").textContent =
+    turnaroundDaysInitial.toFixed(2);
+  document.getElementById("turnaroundDaysNotRounded").textContent =
+    finalTurnaroundDaysNotRounded.toFixed(2);
+  document.getElementById("weekendBonusRate").textContent =
+    weekendBonusRate + "%";
+  document.getElementById("weekendBonusPercent").textContent =
+    weekendBonusContribution + "%";
+  document.getElementById("turnaroundDaysRounded").textContent =
+    finalTurnaroundDaysRounded;
 
   // Append O-days (Turnaround Days) to the schedule table
   const turnaroundStartDate = new Date(end.getTime());
@@ -141,7 +150,8 @@ function generateSchedule() {
     const td = String(currentTurnaroundDate.getDate()).padStart(2, "0");
     const turnaroundDateKey = `${ty}-${tm}-${td}`;
 
-    let turnaroundDayOfWeek = dateMapping[turnaroundDateKey] || getDayOfWeek(currentTurnaroundDate);
+    let turnaroundDayOfWeek =
+      dateMapping[turnaroundDateKey] || getDayOfWeek(currentTurnaroundDate);
 
     const row = document.createElement("tr");
     const dayCell = document.createElement("td");
@@ -182,8 +192,8 @@ function resetForm() {
   document.getElementById("modelTripDays").textContent = "0";
   document.getElementById("turnaroundDaysInitial").textContent = "0";
   document.getElementById("turnaroundDaysNotRounded").textContent = "0";
-  document.getElementById("turnaroundDaysRounded").textContent = "0";
   document.getElementById("weekendBonusRate").textContent = "0%";
   document.getElementById("weekendBonusPercent").textContent = "0%";
+  document.getElementById("turnaroundDaysRounded").textContent = "0";
   document.getElementById("errorMessage").textContent = "";
 }
