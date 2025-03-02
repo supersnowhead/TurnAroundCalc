@@ -12,10 +12,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const logoImg = document.getElementById("logoImg");
     if (this.checked) {
       body.classList.add("dark-mode");
-      logoImg.src = "Std_Alt_Endorsed_StatcoDSI_TransP.jpg";
+      logoImg.src = "logo_dark.jpg";
     } else {
       body.classList.remove("dark-mode");
-      logoImg.src = "Std_Alt_Endorsed_StatcoDSI_FullColor.jpg";
+      logoImg.src = "logo_light.jpg";
     }
   });
 });
@@ -87,7 +87,6 @@ function generateSchedule() {
     row.appendChild(dayCell);
     row.appendChild(dateCell);
     row.appendChild(codeCell);
-
     scheduleTableBody.appendChild(row);
   }
 
@@ -104,10 +103,12 @@ function generateSchedule() {
   const finalTurnaroundDaysRounded = Math.round(finalTurnaroundDaysNotRounded);
   const totalTurnaroundDays = finalTurnaroundDaysRounded;
 
-  // Calculate Weekend Bonus Contribution Percentage
-  let weekendBonusPercentage = 0;
+  // Weekend Bonus Rate: Static 25% if any weekend exists, otherwise 0%
+  const weekendBonusRate = weekendCount > 0 ? 25 : 0;
+  // Weekend Bonus Contribution: Calculated as percentage of total turnaround days contributed by the weekend bonus.
+  let weekendBonusContribution = 0;
   if (finalTurnaroundDaysNotRounded > 0) {
-    weekendBonusPercentage = ((additionalTurnaround / finalTurnaroundDaysNotRounded) * 100).toFixed(2);
+    weekendBonusContribution = ((additionalTurnaround / finalTurnaroundDaysNotRounded) * 100).toFixed(2);
   }
 
   // Update Results Summary
@@ -121,9 +122,12 @@ function generateSchedule() {
   document.getElementById("modelTripDays").textContent = dayCount;
   document.getElementById("turnaroundDaysInitial").textContent = turnaroundDaysInitial.toFixed(2);
   document.getElementById("turnaroundDaysNotRounded").textContent = finalTurnaroundDaysNotRounded.toFixed(2);
+  // Insert the new rows in order:
+  // Update Weekend Bonus Rate (Static)
+  document.getElementById("weekendBonusRate").textContent = weekendBonusRate + "%";
+  // Update Weekend Bonus Contribution (%)
+  document.getElementById("weekendBonusPercent").textContent = weekendBonusContribution + "%";
   document.getElementById("turnaroundDaysRounded").textContent = finalTurnaroundDaysRounded;
-  // Update new Weekend Bonus Contribution row
-  document.getElementById("weekendBonusPercent").textContent = weekendBonusPercentage + "%";
 
   // Append O-days (Turnaround Days) to the schedule table
   const turnaroundStartDate = new Date(end.getTime());
@@ -151,7 +155,6 @@ function generateSchedule() {
     row.appendChild(dayCell);
     row.appendChild(dateCell);
     row.appendChild(codeCell);
-
     scheduleTableBody.appendChild(row);
   }
 }
@@ -180,6 +183,7 @@ function resetForm() {
   document.getElementById("turnaroundDaysInitial").textContent = "0";
   document.getElementById("turnaroundDaysNotRounded").textContent = "0";
   document.getElementById("turnaroundDaysRounded").textContent = "0";
+  document.getElementById("weekendBonusRate").textContent = "0%";
   document.getElementById("weekendBonusPercent").textContent = "0%";
   document.getElementById("errorMessage").textContent = "";
 }

@@ -9,7 +9,8 @@
 <body>
   <!-- Header with Logo, Title, and Dark Mode Toggle -->
   <header>
-    <img src="Std_Alt_Endorsed_StatcoDSI_FullColor.jpg" alt="Statco DSI Logo" id="logoImg" />
+    <!-- Updated logo file names -->
+    <img src="logo_light.jpg" alt="Statco DSI Logo" id="logoImg" />
     <div class="title-section">
       <h1>Turnaround Day Calculator</h1>
       <p>Calculate the total trip days, weekend days, and turnaround days.</p>
@@ -97,7 +98,10 @@
             <td>Turnaround Days (Not Rounded)</td>
             <td id="turnaroundDaysNotRounded">0</td>
           </tr>
-          <!-- New Row for Weekend Bonus Contribution -->
+          <tr title="The static bonus rate applied to weekend days (25% if there is at least one weekend day, otherwise 0%).">
+            <td>Weekend Bonus Rate</td>
+            <td id="weekendBonusRate">0%</td>
+          </tr>
           <tr title="The percentage of the total turnaround days that is contributed by the weekend bonus.">
             <td>Weekend Bonus Contribution (%)</td>
             <td id="weekendBonusPercent">0%</td>
