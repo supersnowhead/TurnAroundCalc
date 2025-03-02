@@ -104,24 +104,28 @@ function generateSchedule() {
   const finalTurnaroundDaysRounded = Math.round(finalTurnaroundDaysNotRounded);
   const totalTurnaroundDays = finalTurnaroundDaysRounded;
 
+  // Calculate Weekend Bonus Contribution Percentage
+  let weekendBonusPercentage = 0;
+  if (finalTurnaroundDaysNotRounded > 0) {
+    weekendBonusPercentage = ((additionalTurnaround / finalTurnaroundDaysNotRounded) * 100).toFixed(2);
+  }
+
   // Update Results Summary
   document.getElementById("totalTripDays").textContent = dayCount;
   document.getElementById("totalWeekendDays").textContent = weekendCount;
   document.getElementById("totalTurnaroundDays").textContent = totalTurnaroundDays;
 
   // Update Current Date Model Display
-  document.getElementById("turnaroundPercent").textContent =
-    (turnaroundPercentValue * 100).toFixed(2) + "%";
+  document.getElementById("turnaroundPercent").textContent = (turnaroundPercentValue * 100).toFixed(2) + "%";
   document.getElementById("modelWeekendDays").textContent = weekendCount;
   document.getElementById("modelTripDays").textContent = dayCount;
-  document.getElementById("turnaroundDaysInitial").textContent =
-    turnaroundDaysInitial.toFixed(2);
-  document.getElementById("turnaroundDaysNotRounded").textContent =
-    finalTurnaroundDaysNotRounded.toFixed(2);
-  document.getElementById("turnaroundDaysRounded").textContent =
-    finalTurnaroundDaysRounded;
+  document.getElementById("turnaroundDaysInitial").textContent = turnaroundDaysInitial.toFixed(2);
+  document.getElementById("turnaroundDaysNotRounded").textContent = finalTurnaroundDaysNotRounded.toFixed(2);
+  document.getElementById("turnaroundDaysRounded").textContent = finalTurnaroundDaysRounded;
+  // Update new Weekend Bonus Contribution row
+  document.getElementById("weekendBonusPercent").textContent = weekendBonusPercentage + "%";
 
-  // Append O-days (Turnaround Days) to the schedule
+  // Append O-days (Turnaround Days) to the schedule table
   const turnaroundStartDate = new Date(end.getTime());
   turnaroundStartDate.setDate(end.getDate() + 1);
   for (let j = 0; j < totalTurnaroundDays; j++) {
@@ -176,5 +180,6 @@ function resetForm() {
   document.getElementById("turnaroundDaysInitial").textContent = "0";
   document.getElementById("turnaroundDaysNotRounded").textContent = "0";
   document.getElementById("turnaroundDaysRounded").textContent = "0";
+  document.getElementById("weekendBonusPercent").textContent = "0%";
   document.getElementById("errorMessage").textContent = "";
 }
