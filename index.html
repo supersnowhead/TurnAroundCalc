@@ -26,11 +26,13 @@
   <!-- Form Section with Fieldset and Inline Error Message -->
   <div class="form-section">
     <fieldset>
-      <legend>Enter Trip Dates</legend>
+      <legend>Enter Trip Dates & Destination</legend>
       <label for="startDate">Start Date:</label>
       <input type="date" id="startDate" aria-label="Start Date" />
       <label for="endDate">End Date:</label>
       <input type="date" id="endDate" aria-label="End Date" />
+      <label for="cityInput">Destination City:</label>
+      <input type="text" id="cityInput" placeholder="Enter US City" />
       <button id="calculateBtn">Calculate</button>
       <button id="resetBtn">Reset</button>
       <div id="errorMessage" class="error-message" aria-live="polite"></div>
@@ -77,55 +79,57 @@
       <h2>Current Date Model Display</h2>
       <table id="currentDateModel">
         <tbody>
-          <tr title="This is the base percentage used in the calculation (25% for trips ≤7 days, 28% for 8–13 days, 33.33% for trips over 13 days).">
+          <tr title="Base percentage (25% for trips ≤7 days, 28% for 8–13 days, 33.33% for trips >13 days)">
             <td>Turnaround % Used in Current Model</td>
             <td id="turnaroundPercent">0%</td>
           </tr>
-          <tr title="The number of weekend days (Saturday or Sunday) in the trip.">
+          <tr title="Number of weekend days in the trip">
             <td># of Weekend Days</td>
             <td id="modelWeekendDays">0</td>
           </tr>
-          <tr title="Total number of days in the trip (inclusive).">
+          <tr title="Total days in the trip">
             <td>Total Trip Days</td>
             <td id="modelTripDays">0</td>
           </tr>
-          <tr title="Initial turnaround days calculated as (Trip Days × Turnaround Percentage), before adding the weekend bonus.">
+          <tr title="Calculated initial turnaround days before weekend bonus">
             <td>Turnaround Days Initial</td>
             <td id="turnaroundDaysInitial">0</td>
           </tr>
-          <tr title="Turnaround days after adding 25% of weekend days, before rounding.">
+          <tr title="Turnaround days after adding 25% of weekend days, before rounding">
             <td>Turnaround Days (Not Rounded)</td>
             <td id="turnaroundDaysNotRounded">0</td>
           </tr>
-          <tr title="The static bonus rate applied to weekend days (25% if there is at least one weekend day, otherwise 0%).">
+          <tr title="Static bonus rate: 25% if any weekend exists">
             <td>Weekend Bonus Rate</td>
             <td id="weekendBonusRate">0%</td>
           </tr>
-          <tr title="The percentage of the total turnaround days that is contributed by the weekend bonus.">
+          <tr title="% of total turnaround days contributed by weekend bonus">
             <td>Weekend Bonus Contribution (%)</td>
             <td id="weekendBonusPercent">0%</td>
           </tr>
-          <tr title="Final turnaround days after rounding the calculated value.">
+          <tr title="Final turnaround days after rounding">
             <td>Turnaround Days (Rounded)</td>
             <td id="turnaroundDaysRounded">0</td>
           </tr>
         </tbody>
       </table>
 
+      <!-- Weather Forecast Container -->
+      <div id="weatherForecast"></div>
+
       <div class="color-key">
         <h3>Color Key</h3>
-        <!-- T: Yellow. Make the yellow square clickable for Dino Game -->
         <p>
+          <!-- Yellow square (T) is clickable for Dino Game -->
           <span class="legend T" id="dinoGameBtn" title="Click for Dino Game"></span>
           <span class="key-text">Travel Days</span>
         </p>
-        <!-- S: Tan (just normal) -->
         <p>
           <span class="legend S"></span>
           <span class="key-text">OnSite</span>
         </p>
-        <!-- O: LightGreen. Make the green square clickable for Memory Game -->
         <p>
+          <!-- Green square (O) is clickable for Memory Game -->
           <span class="legend O" id="memoryGameBtn" title="Click for Memory Game"></span>
           <span class="key-text">Off At Home</span>
         </p>
