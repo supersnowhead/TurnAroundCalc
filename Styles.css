@@ -1,0 +1,361 @@
+/* Overall Page Style */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #F3ECE4;
+  line-height: 1.5;
+}
+
+/* Dark Mode Overrides */
+body.dark-mode {
+  background-color: #222;
+  color: #eee;
+}
+body.dark-mode header {
+  background-color: #333;
+  border-bottom: 3px solid #444;
+}
+body.dark-mode .title-section h1 {
+  color: #eee;
+}
+body.dark-mode .title-section p {
+  color: #ccc;
+}
+body.dark-mode .form-section fieldset {
+  border-color: #555;
+}
+body.dark-mode .form-section input[type="date"] {
+  background-color: #333;
+  color: #eee;
+  border-color: #555;
+}
+body.dark-mode #resultsSummary {
+  background-color: #555;
+  border: 3px solid #eee;
+}
+body.dark-mode #currentDateModel {
+  background-color: #555;
+  border-color: #777;
+}
+body.dark-mode .toggle-text {
+  color: #eee;
+}
+/* For the schedule table in dark mode, force text to black */
+body.dark-mode #scheduleTable,
+body.dark-mode #scheduleTable th,
+body.dark-mode #scheduleTable td {
+  color: black;
+}
+/* In dark mode, set header background for schedule table */
+body.dark-mode #scheduleTable th {
+  background-color: #555555;
+}
+/* For data cells that do NOT have T, S, or O classes, use #dddddd in dark mode */
+body.dark-mode #scheduleTable td:not(.T):not(.S):not(.O) {
+  background-color: #dddddd;
+}
+
+/* Header with Logo, Title, and Dark Mode Toggle */
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #F3ECE4;
+  border-bottom: 3px solid black;
+}
+header img {
+  width: 400px;
+  max-width: 100%;
+  height: auto;
+  margin-right: 20px;
+}
+.title-section {
+  flex: 1;
+  text-align: center;
+}
+.title-section h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+.title-section p {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #555;
+}
+/* Dark Mode Toggle in Header */
+.dark-mode-toggle {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  margin-right: 8px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #2196F3;
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+.toggle-text {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+}
+body.dark-mode .toggle-text {
+  color: #eee;
+}
+
+/* Form Section */
+.form-section {
+  margin: 20px;
+  padding: 10px 20px;
+}
+.form-section fieldset {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+}
+.form-section legend {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0 5px;
+}
+.form-section label {
+  margin-right: 5px;
+  font-weight: bold;
+}
+.form-section input[type="date"] {
+  border: 1px solid #ccc;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #333;
+  margin-right: 10px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.2s;
+}
+.form-section input[type="date"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+#calculateBtn,
+#resetBtn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s, transform 0.2s;
+}
+#calculateBtn {
+  background-color: #28a745;
+}
+#calculateBtn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+#resetBtn {
+  background-color: #5cb85c;
+}
+#resetBtn:hover {
+  background-color: #4cae4c;
+  transform: translateY(-2px);
+}
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Top Section: Left & Right Columns */
+.top-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin: 20px;
+  gap: 100px;
+}
+.calc-schedule {
+  flex: 0 0 33.33%;
+}
+.schedule-title {
+  text-align: left;
+  margin-bottom: 10px;
+}
+.results {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.results h2 {
+  margin-bottom: 10px;
+  width: 100%;
+  text-align: left;
+}
+
+/* Calculated Schedule Table (Light Mode Default) */
+#scheduleTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  margin-bottom: 10px;
+  table-layout: fixed;
+}
+#scheduleTable th {
+  background-color: #ddd;
+  padding: 8px;
+  text-align: center;
+}
+#scheduleTable td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+/* Narrow the Code column (3rd column) */
+#scheduleTable th:nth-child(3),
+#scheduleTable td:nth-child(3) {
+  width: 60px;
+}
+
+/* Results Summary Table (Light Green, Thick Bold Border) */
+#resultsSummary {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 3px solid black;
+  background-color: #ecfce6;
+  margin-bottom: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+#resultsSummary td,
+#resultsSummary th {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Current Date Model Table (Light Grey) */
+#currentDateModel {
+  border-collapse: collapse;
+  background-color: #eaeaea;
+  margin-bottom: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+#currentDateModel td,
+#currentDateModel th {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Color Key */
+.color-key {
+  margin-top: 10px;
+  width: 90%;
+  max-width: 400px;
+  text-align: left;
+}
+.color-key h3 {
+  margin-bottom: 10px;
+  text-align: left;
+}
+.color-key p {
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+}
+.legend {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border: 1px solid #000;
+}
+.key-text {
+  display: inline-block;
+}
+
+/* Updated Color-Coded Classes for Table Cells with Lighter Colors and Bold Text */
+.T {
+  background-color: #F3F339;
+  font-weight: bold;
+}
+.S {
+  background-color: tan;
+  font-weight: bold;
+}
+.O {
+  background-color: lightgreen;
+  font-weight: bold;
+}
+.legend.T {
+  background-color: #F3F339;
+}
+.legend.S {
+  background-color: tan;
+}
+.legend.O {
+  background-color: lightgreen;
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 768px) {
+  .top-section {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .calc-schedule,
+  .results {
+    flex: 1 0 100%;
+  }
+  header, .form-section, .top-section {
+    margin: 10px;
+    padding: 10px;
+  }
+  .title-section h1 {
+    font-size: 2rem;
+  }
+  .title-section p {
+    font-size: 1.2rem;
+  }
+}

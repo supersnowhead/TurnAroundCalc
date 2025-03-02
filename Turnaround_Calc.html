@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnaround Day Calculator</title>
+  <link rel="stylesheet" href="Styles.css" />
+</head>
+<body>
+  <!-- Header with Logo, Title, and Dark Mode Toggle -->
+  <header>
+    <img src="Std_Alt_Endorsed_StatcoDSI_FullColor.jpg" alt="Statco DSI Logo" id="logoImg" />
+    <div class="title-section">
+      <h1>Turnaround Day Calculator</h1>
+      <p>Calculate the total trip days, weekend days, and turnaround days.</p>
+    </div>
+    <div class="dark-mode-toggle">
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider round"></span>
+      </label>
+      <span class="toggle-text">Dark Mode</span>
+    </div>
+  </header>
+
+  <!-- Form Section with Fieldset and Inline Error Message -->
+  <div class="form-section">
+    <fieldset>
+      <legend>Enter Trip Dates</legend>
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" aria-label="Start Date" />
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" aria-label="End Date" />
+      <button id="calculateBtn">Calculate</button>
+      <button id="resetBtn">Reset</button>
+      <div id="errorMessage" class="error-message" aria-live="polite"></div>
+    </fieldset>
+  </div>
+
+  <!-- Main Content Section -->
+  <div class="top-section">
+    <div class="calc-schedule">
+      <h2 class="schedule-title">Calculated Schedule</h2>
+      <table id="scheduleTable">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Date</th>
+            <th>Code</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Populated dynamically by script.js -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="results">
+      <h2>Results</h2>
+      <table id="resultsSummary">
+        <tbody>
+          <tr>
+            <td>Total Trip Days</td>
+            <td id="totalTripDays">0</td>
+          </tr>
+          <tr>
+            <td>Total Weekend Days</td>
+            <td id="totalWeekendDays">0</td>
+          </tr>
+          <tr>
+            <td>Total Turnaround Days</td>
+            <td id="totalTurnaroundDays">0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Current Date Model Display</h2>
+      <table id="currentDateModel">
+        <tbody>
+          <tr title="This is the base percentage used in the calculation (25% for trips ≤7 days, 28% for 8–13 days, 33.33% for trips over 13 days).">
+            <td>Turnaround % Used in Current Model</td>
+            <td id="turnaroundPercent">0%</td>
+          </tr>
+          <tr title="The number of weekend days (Saturday or Sunday) in the trip.">
+            <td># of Weekend Days</td>
+            <td id="modelWeekendDays">0</td>
+          </tr>
+          <tr title="Total number of days in the trip (inclusive).">
+            <td>Total Trip Days</td>
+            <td id="modelTripDays">0</td>
+          </tr>
+          <tr title="Initial turnaround days calculated as (Trip Days × Turnaround Percentage), before adding the weekend bonus.">
+            <td>Turnaround Days Initial</td>
+            <td id="turnaroundDaysInitial">0</td>
+          </tr>
+          <tr title="Turnaround days after adding 25% of weekend days, before rounding.">
+            <td>Turnaround Days (Not Rounded)</td>
+            <td id="turnaroundDaysNotRounded">0</td>
+          </tr>
+          <tr title="Final turnaround days after rounding the calculated value.">
+            <td>Turnaround Days (Rounded)</td>
+            <td id="turnaroundDaysRounded">0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="color-key">
+        <h3>Color Key</h3>
+        <p>
+          <span class="legend T"></span>
+          <span class="key-text">Travel Days</span>
+        </p>
+        <p>
+          <span class="legend S"></span>
+          <span class="key-text">OnSite</span>
+        </p>
+        <p>
+          <span class="legend O"></span>
+          <span class="key-text">Off At Home</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="dateMapping.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
