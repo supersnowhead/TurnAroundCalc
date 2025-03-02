@@ -19,12 +19,12 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Easter Egg: Click yellow square (T) for Dino Game
+  // Easter Egg: Dino Game on yellow T square
   document.getElementById("dinoGameBtn").addEventListener("click", function() {
     window.open("dino.html", "_blank");
   });
 
-  // Easter Egg: Click green square (O) for Memory Game
+  // Easter Egg: Memory Game on green O square
   document.getElementById("memoryGameBtn").addEventListener("click", function() {
     window.open("memory.html", "_blank");
   });
@@ -48,6 +48,7 @@ function generateSchedule() {
   const errorMessage = document.getElementById("errorMessage");
   errorMessage.textContent = "";
 
+  // Validate date inputs
   if (!startDateInput || !endDateInput) {
     errorMessage.textContent = "Please enter both Start Date and End Date.";
     return;
@@ -61,15 +62,15 @@ function generateSchedule() {
     return;
   }
 
-  // Clear schedule table
+  // Clear the schedule table
   const scheduleTableBody = document.querySelector("#scheduleTable tbody");
   scheduleTableBody.innerHTML = "";
 
-  // Calculate trip days (inclusive)
+  // Calculate the number of trip days (inclusive)
   const dayCount = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
   let weekendCount = 0;
 
-  // Loop through trip days
+  // Build schedule rows
   for (let i = 0; i < dayCount; i++) {
     const currentDate = new Date(start.getTime());
     currentDate.setDate(start.getDate() + i);
@@ -79,13 +80,16 @@ function generateSchedule() {
     const d = String(currentDate.getDate()).padStart(2, "0");
     const dateKey = `${y}-${m}-${d}`;
 
+    // Use dateMapping or fallback
     let dayOfWeek = dateMapping[dateKey] || getDayOfWeek(currentDate);
     if (dayOfWeek === "Sat" || dayOfWeek === "Sun") {
       weekendCount++;
     }
 
+    // Mark first & last day as T, otherwise S
     const code = (i === 0 || i === dayCount - 1) ? "T" : "S";
 
+    // Create table row
     const row = document.createElement("tr");
     const dayCell = document.createElement("td");
     dayCell.textContent = dayOfWeek;
@@ -101,7 +105,7 @@ function generateSchedule() {
     scheduleTableBody.appendChild(row);
   }
 
-  // Turnaround Calculations
+  // Turnaround calculations
   let turnaroundPercentValue = 0.25;
   if (dayCount > 7 && dayCount <= 13) {
     turnaroundPercentValue = 0.28;
@@ -115,9 +119,8 @@ function generateSchedule() {
   const finalTurnaroundDaysRounded = Math.round(finalTurnaroundDaysNotRounded);
   const totalTurnaroundDays = finalTurnaroundDaysRounded;
 
-  // Weekend Bonus Rate (static 25% if any weekend exists)
+  // Weekend bonus rate & contribution
   const weekendBonusRate = weekendCount > 0 ? 25 : 0;
-  // Weekend Bonus Contribution: percentage of total turnaround days from weekend bonus
   let weekendBonusContribution = 0;
   if (finalTurnaroundDaysNotRounded > 0) {
     weekendBonusContribution = ((additionalTurnaround / finalTurnaroundDaysNotRounded) * 100).toFixed(2);
@@ -129,8 +132,7 @@ function generateSchedule() {
   document.getElementById("totalTurnaroundDays").textContent = totalTurnaroundDays;
 
   // Update Current Date Model Display
-  document.getElementById("turnaroundPercent").textContent =
-    (turnaroundPercentValue * 100).toFixed(2) + "%";
+  document.getElementById("turnaroundPercent").textContent = (turnaroundPercentValue * 100).toFixed(2) + "%";
   document.getElementById("modelWeekendDays").textContent = weekendCount;
   document.getElementById("modelTripDays").textContent = dayCount;
   document.getElementById("turnaroundDaysInitial").textContent = turnaroundDaysInitial.toFixed(2);
@@ -139,9 +141,10 @@ function generateSchedule() {
   document.getElementById("weekendBonusPercent").textContent = weekendBonusContribution + "%";
   document.getElementById("turnaroundDaysRounded").textContent = finalTurnaroundDaysRounded;
 
-  // Append O-days (Turnaround Days) to the schedule table
+  // Append O-days to the schedule
   const turnaroundStartDate = new Date(end.getTime());
   turnaroundStartDate.setDate(end.getDate() + 1);
+  const scheduleTableBody2 = document.querySelector("#scheduleTable tbody");
   for (let j = 0; j < totalTurnaroundDays; j++) {
     const currentTurnaroundDate = new Date(turnaroundStartDate.getTime());
     currentTurnaroundDate.setDate(turnaroundStartDate.getDate() + j);
@@ -165,10 +168,10 @@ function generateSchedule() {
     row.appendChild(dayCell);
     row.appendChild(dateCell);
     row.appendChild(codeCell);
-    scheduleTableBody.appendChild(row);
+    scheduleTableBody2.appendChild(row);
   }
 
-  // If a city is provided, fetch the weather forecast for the trip start date
+  // If city input is provided, fetch weather
   if (cityInput !== "") {
     fetchWeatherForecast(cityInput, startDateInput);
   } else {
@@ -177,7 +180,7 @@ function generateSchedule() {
 }
 
 /**
- * Fallback: Returns abbreviated day name.
+ * Fallback: returns abbreviated day name
  */
 function getDayOfWeek(date) {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -188,8 +191,14 @@ function getDayOfWeek(date) {
  * Fetch weather forecast for the given city and trip start date
  */
 function fetchWeatherForecast(city, tripStartDate) {
-  const apiKey = "996b65a5e617bf8f1c3c1e9116aa1ab6"; // Replace with your OpenWeatherMap API key
-  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city},US&appid=${apiKey}&units=imperial`;
+  // Basic logic: if city has no comma, add ",US"
+  let queryCity = city;
+  if (!queryCity.includes(",")) {
+    queryCity += ",US";
+  }
+
+  const apiKey = "996b65a5e617bf8f1c3c1e9116aa1ab6"; // Replace with your real API key
+  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${queryCity}&appid=${apiKey}&units=imperial`;
 
   fetch(url)
     .then(response => {
@@ -199,13 +208,13 @@ function fetchWeatherForecast(city, tripStartDate) {
       return response.json();
     })
     .then(data => {
-      // Find forecast for the trip start date
       const forecastList = data.list;
-      // Filter forecasts for the trip start date (YYYY-MM-DD)
+      // Filter forecasts for the exact trip start date
       const filteredForecasts = forecastList.filter(item => item.dt_txt.startsWith(tripStartDate));
+
       let weatherHTML = "";
       if (filteredForecasts.length > 0) {
-        // For simplicity, choose the forecast closest to noon
+        // Choose the forecast closest to noon
         let targetForecast = filteredForecasts.reduce((prev, curr) => {
           return Math.abs(new Date(curr.dt_txt).getHours() - 12) <
                  Math.abs(new Date(prev.dt_txt).getHours() - 12)
@@ -227,7 +236,7 @@ function fetchWeatherForecast(city, tripStartDate) {
 }
 
 /**
- * Reset function: Clears all inputs, tables, and error messages.
+ * Reset function: Clears all inputs, tables, and error messages
  */
 function resetForm() {
   document.getElementById("startDate").value = "";
