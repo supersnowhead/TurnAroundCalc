@@ -12,11 +12,21 @@ window.addEventListener("DOMContentLoaded", () => {
     const logoImg = document.getElementById("logoImg");
     if (this.checked) {
       body.classList.add("dark-mode");
-      logoImg.src = "logo_dark.jpg"; // Use your dark-mode logo
+      logoImg.src = "logo_dark.jpg";
     } else {
       body.classList.remove("dark-mode");
-      logoImg.src = "logo_light.jpg"; // Use your light-mode logo
+      logoImg.src = "logo_light.jpg";
     }
+  });
+
+  // Easter Egg: Click the yellow T square for Dino Game
+  document.getElementById("dinoGameBtn").addEventListener("click", function() {
+    window.open("dino.html", "_blank");
+  });
+
+  // Easter Egg: Click the green O square for Memory Game
+  document.getElementById("memoryGameBtn").addEventListener("click", function() {
+    window.open("memory.html", "_blank");
   });
 });
 
@@ -58,7 +68,7 @@ function generateSchedule() {
   const dayCount = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
   let weekendCount = 0;
 
-  // Loop through each day in the trip
+  // Loop through trip days
   for (let i = 0; i < dayCount; i++) {
     const currentDate = new Date(start.getTime());
     currentDate.setDate(start.getDate() + i);
@@ -68,18 +78,16 @@ function generateSchedule() {
     const d = String(currentDate.getDate()).padStart(2, "0");
     const dateKey = `${y}-${m}-${d}`;
 
-    // Fallback if dateMapping doesn't have the date
+    // Use dateMapping or fallback
     let dayOfWeek = dateMapping[dateKey] || getDayOfWeek(currentDate);
-
-    // Check if it's a weekend
     if (dayOfWeek === "Sat" || dayOfWeek === "Sun") {
       weekendCount++;
     }
 
-    // Code: T on first & last day, otherwise S
+    // T on first & last day, otherwise S
     const code = (i === 0 || i === dayCount - 1) ? "T" : "S";
 
-    // Build a table row
+    // Create table row
     const row = document.createElement("tr");
     const dayCell = document.createElement("td");
     dayCell.textContent = dayOfWeek;
@@ -111,7 +119,7 @@ function generateSchedule() {
 
   // Weekend Bonus Rate: 25% if weekendCount > 0, else 0%
   const weekendBonusRate = weekendCount > 0 ? 25 : 0;
-  // Weekend Bonus Contribution: % of total turnaround days from the weekend bonus
+  // Weekend Bonus Contribution: portion of total turnaround days from weekend bonus
   let weekendBonusContribution = 0;
   if (finalTurnaroundDaysNotRounded > 0) {
     weekendBonusContribution = ((additionalTurnaround / finalTurnaroundDaysNotRounded) * 100).toFixed(2);

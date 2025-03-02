@@ -1,3 +1,4 @@
+<!-- dino.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,36 +27,29 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Simple placeholder: draw a "dino" rectangle and move an obstacle.
     let dinoX = 50;
     let dinoY = 150;
     let obstacleX = 600;
-    let obstacleY = 150;
     let jump = false;
     let jumpVelocity = 0;
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw "ground"
+      // ground
       ctx.fillStyle = "#999";
       ctx.fillRect(0, 180, 600, 20);
-
-      // Draw "dino"
+      // dino
       ctx.fillStyle = "green";
       ctx.fillRect(dinoX, dinoY, 20, 30);
-
-      // Draw "obstacle"
+      // obstacle
       ctx.fillStyle = "red";
-      ctx.fillRect(obstacleX, obstacleY, 20, 30);
+      ctx.fillRect(obstacleX, 150, 20, 30);
 
-      // Update obstacle position
       obstacleX -= 5;
       if (obstacleX < -20) {
         obstacleX = 600;
       }
 
-      // Jump logic
       if (jump) {
         dinoY += jumpVelocity;
         jumpVelocity += 1; // gravity
@@ -70,13 +64,12 @@
       draw();
       requestAnimationFrame(gameLoop);
     }
-
     gameLoop();
 
     document.addEventListener("keydown", function(e) {
       if ((e.code === "Space" || e.code === "ArrowUp") && !jump) {
         jump = true;
-        jumpVelocity = -10; // jump speed
+        jumpVelocity = -10;
       }
     });
   </script>
