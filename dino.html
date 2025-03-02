@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dino Game</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f0f0;
+    }
+    #gameCanvas {
+      border: 2px solid #333;
+      margin-top: 50px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dino Game (Placeholder)</h1>
+  <p>Press Space or Up Arrow to jump</p>
+  <canvas id="gameCanvas" width="600" height="200"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Simple placeholder: draw a "dino" rectangle and move an obstacle.
+    let dinoX = 50;
+    let dinoY = 150;
+    let obstacleX = 600;
+    let obstacleY = 150;
+    let jump = false;
+    let jumpVelocity = 0;
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw "ground"
+      ctx.fillStyle = "#999";
+      ctx.fillRect(0, 180, 600, 20);
+
+      // Draw "dino"
+      ctx.fillStyle = "green";
+      ctx.fillRect(dinoX, dinoY, 20, 30);
+
+      // Draw "obstacle"
+      ctx.fillStyle = "red";
+      ctx.fillRect(obstacleX, obstacleY, 20, 30);
+
+      // Update obstacle position
+      obstacleX -= 5;
+      if (obstacleX < -20) {
+        obstacleX = 600;
+      }
+
+      // Jump logic
+      if (jump) {
+        dinoY += jumpVelocity;
+        jumpVelocity += 1; // gravity
+        if (dinoY >= 150) {
+          dinoY = 150;
+          jump = false;
+        }
+      }
+    }
+
+    function gameLoop() {
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+
+    document.addEventListener("keydown", function(e) {
+      if ((e.code === "Space" || e.code === "ArrowUp") && !jump) {
+        jump = true;
+        jumpVelocity = -10; // jump speed
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Memory Game</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      text-align: center;
+    }
+    .card-grid {
+      display: inline-grid;
+      grid-template-columns: repeat(4, 100px);
+      grid-gap: 10px;
+      margin-top: 50px;
+    }
+    .card {
+      width: 100px;
+      height: 150px;
+      background: #ccc;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .card.flipped {
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Memory Game (Placeholder)</h1>
+  <div class="card-grid" id="cardGrid"></div>
+
+  <script>
+    const cardGrid = document.getElementById("cardGrid");
+    const symbols = ["A","A","B","B","C","C","D","D"];
+    let flippedCards = [];
+    let matchedCount = 0;
+
+    // Shuffle symbols
+    symbols.sort(() => 0.5 - Math.random());
+
+    // Create cards
+    symbols.forEach(symbol => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.dataset.symbol = symbol;
+      card.innerText = "?";
+      card.addEventListener("click", flipCard);
+      cardGrid.appendChild(card);
+    });
+
+    function flipCard() {
+      if (this.classList.contains("flipped")) return;
+      this.classList.add("flipped");
+      this.innerText = this.dataset.symbol;
+      flippedCards.push(this);
+
+      if (flippedCards.length === 2) {
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      const [card1, card2] = flippedCards;
+      if (card1.dataset.symbol === card2.dataset.symbol) {
+        matchedCount += 2;
+        flippedCards = [];
+        if (matchedCount === symbols.length) {
+          alert("You matched all cards!");
+        }
+      } else {
+        setTimeout(() => {
+          card1.classList.remove("flipped");
+          card2.classList.remove("flipped");
+          card1.innerText = "?";
+          card2.innerText = "?";
+          flippedCards = [];
+        }, 1000);
+      }
+    }
+  </script>
+</body>
+</html>

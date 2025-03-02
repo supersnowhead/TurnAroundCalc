@@ -9,7 +9,6 @@
 <body>
   <!-- Header with Logo, Title, and Dark Mode Toggle -->
   <header>
-    <!-- Updated: alt="Logo" (no references to Statco) -->
     <img src="logo_light.jpg" alt="Logo" id="logoImg" />
     <div class="title-section">
       <h1>Turnaround Day Calculator</h1>
@@ -98,13 +97,11 @@
             <td>Turnaround Days (Not Rounded)</td>
             <td id="turnaroundDaysNotRounded">0</td>
           </tr>
-          <!-- Weekend Bonus Rate (static 25% if weekend, else 0%) -->
           <tr title="The static bonus rate applied to weekend days (25% if there is at least one weekend day, otherwise 0%).">
             <td>Weekend Bonus Rate</td>
             <td id="weekendBonusRate">0%</td>
           </tr>
-          <!-- Weekend Bonus Contribution (calculated portion of total turnaround days) -->
-          <tr title="The percentage of the total turnaround days contributed by the weekend bonus.">
+          <tr title="The percentage of the total turnaround days that is contributed by the weekend bonus.">
             <td>Weekend Bonus Contribution (%)</td>
             <td id="weekendBonusPercent">0%</td>
           </tr>
@@ -128,6 +125,13 @@
         <p>
           <span class="legend O"></span>
           <span class="key-text">Off At Home</span>
+        </p>
+        <!-- Easter Egg Buttons -->
+        <p>
+          <button id="dinoGameBtn" style="background-color: yellow;">Dino Game</button>
+        </p>
+        <p>
+          <button id="memoryGameBtn" style="background-color: lightgreen;">Memory Game</button>
         </p>
       </div>
     </div>
