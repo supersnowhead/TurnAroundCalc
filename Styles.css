@@ -294,7 +294,6 @@ body.dark-mode .calc-summary {
   color: #eee;
 }
 body.dark-mode .calc-summary b { color: #fff; }
-}
 
 
 /* Current Date Model Table (Light Grey) */
@@ -384,5 +383,6 @@ body.dark-mode .calc-summary b { color: #fff; }
     font-size: 1.2rem;
   }
 }
+
 
 
