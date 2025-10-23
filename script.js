@@ -93,8 +93,9 @@ function generateSchedule() {
       weekendCount++;
     }
 
-    // Mark first & last day as T, otherwise S
-    const code = (i === 0 || i === dayCount - 1) ? "T" : "S";
+    // ✅ Mark first day by index, last day by actual date string
+    const isEnd = (dateKey === endDateInput);
+    const code = (i === 0 || isEnd) ? "T" : "S";
 
     // Create table row
     const row = document.createElement("tr");
@@ -148,9 +149,10 @@ function generateSchedule() {
   document.getElementById("weekendBonusPercent").textContent = weekendBonusContribution + "%";
   document.getElementById("turnaroundDaysRounded").textContent = finalTurnaroundDaysRounded;
 
-  // Append O-days to the schedule
-  const turnaroundStartDate = new Date(end.getTime());
-  turnaroundStartDate.setDate(end.getDate() + 1);
+  // ✅ Append O-days starting from the calendar day AFTER the end date
+  const turnaroundStartDate = new Date(
+    end.getFullYear(), end.getMonth(), end.getDate() + 1
+  );
   const scheduleTableBody2 = document.querySelector("#scheduleTable tbody");
   for (let j = 0; j < totalTurnaroundDays; j++) {
     const currentTurnaroundDate = new Date(turnaroundStartDate.getTime());
