@@ -66,8 +66,15 @@ function generateSchedule() {
   const scheduleTableBody = document.querySelector("#scheduleTable tbody");
   scheduleTableBody.innerHTML = "";
 
-  // Calculate the number of trip days (inclusive)
-  const dayCount = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+  // Calculate the number of trip days (inclusive)  ✅ DST-proof change
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
+  const dayCount =
+    Math.floor(
+      (Date.UTC(end.getFullYear(), end.getMonth(), end.getDate()) -
+       Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())) /
+      MS_PER_DAY
+    ) + 1;
+
   let weekendCount = 0;
 
   // Build schedule rows
