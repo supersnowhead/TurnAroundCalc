@@ -149,6 +149,17 @@ function generateSchedule() {
   document.getElementById("weekendBonusPercent").textContent = weekendBonusContribution + "%";
   document.getElementById("turnaroundDaysRounded").textContent = finalTurnaroundDaysRounded;
 
+  // === Human-readable math summary (auto-filled) ===
+  const pctUsed = (turnaroundPercentValue * 100).toFixed(2);
+  const summaryHTML = `
+    Trip length: <b>${dayCount}</b> day(s) with <b>${weekendCount}</b> weekend day(s).<br>
+    Base turnaround: <b>${dayCount}</b> × <b>${pctUsed}%</b> = <b>${turnaroundDaysInitial.toFixed(2)}</b>.<br>
+    Weekend bonus: <b>${weekendCount}</b> × <b>${weekendBonusRate}%</b> = <b>${additionalTurnaround.toFixed(2)}</b>.<br>
+    Total (not rounded): <b>${finalTurnaroundDaysNotRounded.toFixed(2)}</b> → rounded to <b>${finalTurnaroundDaysRounded}</b>.
+  `;
+  const summaryEl = document.getElementById("calcSummary");
+  if (summaryEl) summaryEl.innerHTML = summaryHTML;
+
   // ✅ Append O-days starting from the calendar day AFTER the end date
   const turnaroundStartDate = new Date(
     end.getFullYear(), end.getMonth(), end.getDate() + 1
@@ -265,4 +276,6 @@ function resetForm() {
   document.getElementById("turnaroundDaysRounded").textContent = "0";
   document.getElementById("weatherForecast").innerHTML = "";
   document.getElementById("errorMessage").textContent = "";
+  const summaryEl = document.getElementById("calcSummary"); // clear summary
+  if (summaryEl) summaryEl.innerHTML = "";
 }
