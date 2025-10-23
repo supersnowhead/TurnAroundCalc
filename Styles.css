@@ -272,30 +272,28 @@ body.dark-mode .toggle-text {
   font-weight: bold;
 }
 
-/* Calculation summary box */
+/* Calculation summary box — match Current Date Model table */
 .calc-summary {
   margin-top: 10px;
   font-size: 0.9em;
   line-height: 1.4;
-  background-color: #f7f7f7;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 90%;
-  max-width: 400px;
+  background-color: #eaeaea;   /* same as #currentDateModel */
+  border: 1px solid #ccc;      /* same border */
+  padding: 8px;                /* table cell-ish padding */
+  border-radius: 0;            /* tables have square corners */
+  width: 90%;                  /* match other panels */
+  max-width: 400px;            /* match other panels */
+  color: inherit;
 }
-.calc-summary b {
-  color: #333;
-}
+.calc-summary b { color: #333; }
 
-/* Dark mode for summary */
+/* Dark mode — mirror #currentDateModel dark styles */
 body.dark-mode .calc-summary {
-  background-color: #3a3a3a;
-  border-color: #666;
+  background-color: #555;  /* same as #currentDateModel in dark mode */
+  border-color: #777;      /* same as #currentDateModel in dark mode */
   color: #eee;
 }
-body.dark-mode .calc-summary b {
-  color: #fff;
+body.dark-mode .calc-summary b { color: #fff; }
 }
 
 
@@ -386,4 +384,5 @@ body.dark-mode .calc-summary b {
     font-size: 1.2rem;
   }
 }
+
 
