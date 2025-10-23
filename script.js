@@ -150,15 +150,25 @@ function generateSchedule() {
   document.getElementById("turnaroundDaysRounded").textContent = finalTurnaroundDaysRounded;
 
   // === Human-readable math summary (auto-filled) ===
-  const pctUsed = (turnaroundPercentValue * 100).toFixed(2);
-  const summaryHTML = `
-    Trip length: <b>${dayCount}</b> day(s) with <b>${weekendCount}</b> weekend day(s).<br>
-    Base turnaround: <b>${dayCount}</b> × <b>${pctUsed}%</b> = <b>${turnaroundDaysInitial.toFixed(2)}</b>.<br>
-    Weekend bonus: <b>${weekendCount}</b> × <b>${weekendBonusRate}%</b> = <b>${additionalTurnaround.toFixed(2)}</b>.<br>
-    Total (not rounded): <b>${finalTurnaroundDaysNotRounded.toFixed(2)}</b> → rounded to <b>${finalTurnaroundDaysRounded}</b>.
-  `;
-  const summaryEl = document.getElementById("calcSummary");
-  if (summaryEl) summaryEl.innerHTML = summaryHTML;
+  try {
+    const pctUsed = (turnaroundPercentValue * 100).toFixed(2);
+    const wbRate = weekendBonusRate; // already a % (0 or 25)
+    const summaryHTML = `
+      Trip length: <b>${dayCount}</b> day(s) with <b>${weekendCount}</b> weekend day(s).<br>
+      Base turnaround: <b>${dayCount}</b> × <b>${pctUsed}%</b> = <b>${turnaroundDaysInitial.toFixed(2)}</b>.<br>
+      Weekend bonus: <b>${weekendCount}</b> × <b>${wbRate}%</b> = <b>${additionalTurnaround.toFixed(2)}</b>.<br>
+      Total (not rounded): <b>${finalTurnaroundDaysNotRounded.toFixed(2)}</b> → rounded to <b>${finalTurnaroundDaysRounded}</b>.
+    `;
+    const summaryEl = document.getElementById("calcSummary");
+    if (summaryEl) {
+      summaryEl.style.display = "block";
+      summaryEl.innerHTML = summaryHTML;
+    } else {
+      console.warn("calcSummary element not found in DOM.");
+    }
+  } catch (e) {
+    console.error("Failed to render summary:", e);
+  }
 
   // ✅ Append O-days starting from the calendar day AFTER the end date
   const turnaroundStartDate = new Date(
@@ -276,6 +286,6 @@ function resetForm() {
   document.getElementById("turnaroundDaysRounded").textContent = "0";
   document.getElementById("weatherForecast").innerHTML = "";
   document.getElementById("errorMessage").textContent = "";
-  const summaryEl = document.getElementById("calcSummary"); // clear summary
+  const summaryEl = document.getElementById("calcSummary");
   if (summaryEl) summaryEl.innerHTML = "";
 }
