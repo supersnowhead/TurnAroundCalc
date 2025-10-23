@@ -1,0 +1,13 @@
+{
+  "name": "Turnaround Calculator",
+  "short_name": "Turnaround",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eaeaea",
+  "theme_color": "#eaeaea",
+  "icons": [
+    { "src": "icons/icon-192-solid.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512-solid.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
