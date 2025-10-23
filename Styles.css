@@ -272,6 +272,33 @@ body.dark-mode .toggle-text {
   font-weight: bold;
 }
 
+/* Calculation summary box */
+.calc-summary {
+  margin-top: 10px;
+  font-size: 0.9em;
+  line-height: 1.4;
+  background-color: #f7f7f7;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 400px;
+}
+.calc-summary b {
+  color: #333;
+}
+
+/* Dark mode for summary */
+body.dark-mode .calc-summary {
+  background-color: #3a3a3a;
+  border-color: #666;
+  color: #eee;
+}
+body.dark-mode .calc-summary b {
+  color: #fff;
+}
+
+
 /* Current Date Model Table (Light Grey) */
 #currentDateModel {
   border-collapse: collapse;
@@ -359,3 +386,4 @@ body.dark-mode .toggle-text {
     font-size: 1.2rem;
   }
 }
+
