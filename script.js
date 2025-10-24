@@ -48,6 +48,90 @@ function parseDateInput(input) {
   return new Date(year, month - 1, day);
 }
 
+// Accessible, tap-friendly tooltips for rows that have a title=""
+function initRowTooltips() {
+  const tables = [document.getElementById("resultsSummary"), document.getElementById("currentDateModel")];
+  const allTooltips = [];
+
+  tables.forEach(tbl => {
+    if (!tbl) return;
+    tbl.querySelectorAll("tr[title]").forEach(row => {
+      const helpText = row.getAttribute("title") || "";
+      row.removeAttribute("title");
+
+      const firstCell = row.querySelector("td:first-child, th:first-child");
+      if (!firstCell || !helpText.trim()) return;
+
+      // Create the (i) button and tooltip bubble
+      const wrap = document.createElement("span");
+      wrap.className = "cell-help";
+
+      const btn = document.createElement("button");
+      btn.className = "help-tip-btn";
+      btn.type = "button";
+      btn.setAttribute("aria-label", "More info");
+      btn.setAttribute("aria-expanded", "false");
+      btn.textContent = "i";
+
+      const bubble = document.createElement("div");
+      bubble.className = "tooltip-bubble";
+      bubble.setAttribute("role", "tooltip");
+      bubble.textContent = helpText;
+
+      wrap.appendChild(btn);
+      wrap.appendChild(bubble);
+      firstCell.appendChild(wrap);
+
+      allTooltips.push({ btn, bubble });
+      let open = false;
+
+      function openTip() {
+        // close others
+        allTooltips.forEach(t => {
+          t.bubble.classList.remove("visible");
+          t.btn.setAttribute("aria-expanded", "false");
+        });
+        bubble.classList.add("visible");
+        btn.setAttribute("aria-expanded", "true");
+        open = true;
+      }
+
+      function closeTip() {
+        bubble.classList.remove("visible");
+        btn.setAttribute("aria-expanded", "false");
+        open = false;
+      }
+
+      // Toggle on click/tap
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        open ? closeTip() : openTip();
+      });
+
+      // Open on hover (nice for desktop), close on leave
+      btn.addEventListener("mouseenter", openTip);
+      wrap.addEventListener("mouseleave", () => { if (!btn.matches(":focus")) closeTip(); });
+
+      // Keyboard support (Enter/Space/ESC)
+      btn.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeTip();
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          open ? closeTip() : openTip();
+        }
+      });
+
+      // Click outside closes it
+      document.addEventListener("click", (e) => {
+        if (!wrap.contains(e.target)) closeTip();
+      });
+    });
+  });
+}
+
+// Run once DOM is ready
+window.addEventListener("DOMContentLoaded", initRowTooltips);
+
 /**
  * Main function to generate schedule, calculations, and weather forecast
  */
@@ -299,3 +383,4 @@ function resetForm() {
   const summaryEl = document.getElementById("calcSummary");
   if (summaryEl) summaryEl.innerHTML = "";
 }
+
