@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
   resetBtn.addEventListener("click", resetForm);
 
   // Dark Mode Toggle & Logo Switching
-  document.getElementById("darkModeToggle").addEventListener("change", function() {
+  document.getElementById("darkModeToggle").addEventListener("change", function () {
     const body = document.body;
     const logoImg = document.getElementById("logoImg");
     if (this.checked) {
@@ -19,18 +19,16 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Easter Egg: Dino Game on yellow T square
-  document.getElementById("dinoGameBtn").addEventListener("click", function() {
+  // Easter Eggs
+  document.getElementById("dinoGameBtn").addEventListener("click", () => {
     window.open("dino.html", "_blank");
   });
-
-  // Easter Egg: Memory Game on green O square
-  document.getElementById("memoryGameBtn").addEventListener("click", function() {
+  document.getElementById("memoryGameBtn").addEventListener("click", () => {
     window.open("memory.html", "_blank");
   });
 });
 
-// Register service worker for offline support (placed right after DOMContentLoaded block)
+// Register service worker for offline support
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
@@ -40,19 +38,23 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-/**
- * Parse "YYYY-MM-DD" into a Date object (local time)
- */
+/* ------------ Utilities ------------ */
 function parseDateInput(input) {
   const [year, month, day] = input.split("-");
   return new Date(year, month - 1, day);
 }
 
-/**
- * Accessible, tap-friendly tooltips for rows that have a title=""
- */
+function getDayOfWeek(date) {
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return days[date.getDay()];
+}
+
+/* ------------ Accessible tooltips (fixed to viewport) ------------ */
 function initRowTooltips() {
-  const tables = [document.getElementById("resultsSummary"), document.getElementById("currentDateModel")];
+  const tables = [
+    document.getElementById("resultsSummary"),
+    document.getElementById("currentDateModel"),
+  ];
   const allTooltips = [];
 
   tables.forEach(tbl => {
@@ -64,7 +66,6 @@ function initRowTooltips() {
       const firstCell = row.querySelector("td:first-child, th:first-child");
       if (!firstCell || !helpText.trim()) return;
 
-      // Create the (i) button and tooltip bubble
       const wrap = document.createElement("span");
       wrap.className = "cell-help";
 
@@ -86,70 +87,66 @@ function initRowTooltips() {
 
       allTooltips.push({ btn, bubble });
 
-      // === openTip function ===
-    function openTip() {
-  // close others
-  allTooltips.forEach(t => {
-    t.bubble.classList.remove("visible");
-    t.btn.setAttribute("aria-expanded", "false");
-  });
+      function openTip() {
+        // close others
+        allTooltips.forEach(t => {
+          t.bubble.classList.remove("visible");
+          t.btn.setAttribute("aria-expanded", "false");
+        });
 
-  // show, measure, then position to viewport
-  bubble.classList.add("visible");
-  btn.setAttribute("aria-expanded", "true");
+        // show to measure
+        bubble.classList.add("visible");
+        btn.setAttribute("aria-expanded", "true");
 
-  // Measure button in viewport coords
-  const padding = 8; // keep a little margin from the edges
-  const iconOffsetX = 22; // place bubble a bit to the right of the icon
-  const iconOffsetY = 10; // and a bit below it
+        // position to viewport so it never clips
+        const padding = 8;
+        const iconOffsetX = 22;
+        const iconOffsetY = 10;
 
-  const btnRect = btn.getBoundingClientRect();
+        const btnRect = btn.getBoundingClientRect();
 
-  // Temporarily reset any inline positions before measuring bubble size
-  bubble.style.left = "0px";
-  bubble.style.top = "0px";
+        // clear inline first
+        bubble.style.left = "0px";
+        bubble.style.top = "0px";
 
-  const bubRect = bubble.getBoundingClientRect();
-  let left = btnRect.left + iconOffsetX;
-  let top  = btnRect.bottom + iconOffsetY;
+        const bubRect = bubble.getBoundingClientRect();
+        let left = btnRect.left + iconOffsetX;
+        let top = btnRect.bottom + iconOffsetY;
 
-  // If it overflows right, pull it left
-  if (left + bubRect.width + padding > window.innerWidth) {
-    left = window.innerWidth - bubRect.width - padding;
-  }
-  // Keep from going off the left edge
-  if (left < padding) left = padding;
+        // keep on-screen (right/left)
+        if (left + bubRect.width + padding > window.innerWidth) {
+          left = window.innerWidth - bubRect.width - padding;
+        }
+        if (left < padding) left = padding;
 
-  // If it overflows bottom, show above the icon
-  if (top + bubRect.height + padding > window.innerHeight) {
-    top = btnRect.top - bubRect.height - iconOffsetY;
-  }
-  // Keep from going off the top edge
-  if (top < padding) top = padding;
+        // if bottom overflows, show above the icon
+        if (top + bubRect.height + padding > window.innerHeight) {
+          top = btnRect.top - bubRect.height - iconOffsetY;
+        }
+        if (top < padding) top = padding;
 
-  // Commit final position
-  bubble.style.left = `${Math.round(left)}px`;
-  bubble.style.top  = `${Math.round(top)}px`;
-}
+        bubble.style.left = `${Math.round(left)}px`;
+        bubble.style.top = `${Math.round(top)}px`;
+      }
 
-      
       function closeTip() {
         bubble.classList.remove("visible");
         btn.setAttribute("aria-expanded", "false");
       }
 
-      // Toggle on click/tap
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("click", e => {
         e.stopPropagation();
         bubble.classList.contains("visible") ? closeTip() : openTip();
       });
 
-      // Open on hover (desktop), close on leave
+      // Desktop nicety
       btn.addEventListener("mouseenter", openTip);
-      wrap.addEventListener("mouseleave", () => { if (!btn.matches(":focus")) closeTip(); });
+      wrap.addEventListener("mouseleave", () => {
+        if (!btn.matches(":focus")) closeTip();
+      });
 
-      // Keyboard support (Enter/Space/ESC)
-      btn.addEventListener("keydown", (e) => {
+      // Keyboard support
+      btn.addEventListener("keydown", e => {
         if (e.key === "Escape") closeTip();
         if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
@@ -157,24 +154,22 @@ function initRowTooltips() {
         }
       });
 
-      // Click outside closes it
-      document.addEventListener("click", (e) => {
+      // Click outside to close
+      document.addEventListener("click", e => {
         if (!wrap.contains(e.target)) closeTip();
       });
     });
   });
 }
 
-// Run once DOM is ready (and immediately if already parsed)
+// Run once DOM is ready (or immediately if already parsed)
 if (document.readyState === "loading") {
   window.addEventListener("DOMContentLoaded", initRowTooltips);
 } else {
   initRowTooltips();
 }
 
-/**
- * Main function to generate schedule, calculations, and weather forecast
- */
+/* ------------ Main calculation ------------ */
 function generateSchedule() {
   const startDateInput = document.getElementById("startDate").value;
   const endDateInput = document.getElementById("endDate").value;
@@ -182,7 +177,6 @@ function generateSchedule() {
   const errorMessage = document.getElementById("errorMessage");
   errorMessage.textContent = "";
 
-  // Validate date inputs
   if (!startDateInput || !endDateInput) {
     errorMessage.textContent = "Please enter both Start Date and End Date.";
     return;
@@ -196,42 +190,38 @@ function generateSchedule() {
     return;
   }
 
-  // Clear the schedule table
   const scheduleTableBody = document.querySelector("#scheduleTable tbody");
   scheduleTableBody.innerHTML = "";
 
-  // Calculate the number of trip days (inclusive)  ✅ DST-proof change
   const MS_PER_DAY = 24 * 60 * 60 * 1000;
   const dayCount =
     Math.floor(
       (Date.UTC(end.getFullYear(), end.getMonth(), end.getDate()) -
-       Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())) /
+        Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())) /
       MS_PER_DAY
     ) + 1;
 
   let weekendCount = 0;
 
-  // Build schedule rows
   for (let i = 0; i < dayCount; i++) {
     const currentDate = new Date(start.getTime());
     currentDate.setDate(start.getDate() + i);
 
     const y = currentDate.getFullYear();
-       const m = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const m = String(currentDate.getMonth() + 1).padStart(2, "0");
     const d = String(currentDate.getDate()).padStart(2, "0");
     const dateKey = `${y}-${m}-${d}`;
 
-    // Use dateMapping or fallback
-    let dayOfWeek = (typeof dateMapping !== "undefined" && dateMapping[dateKey]) ? dateMapping[dateKey] : getDayOfWeek(currentDate);
-    if (dayOfWeek === "Sat" || dayOfWeek === "Sun") {
-      weekendCount++;
-    }
+    let dayOfWeek =
+      typeof dateMapping !== "undefined" && dateMapping[dateKey]
+        ? dateMapping[dateKey]
+        : getDayOfWeek(currentDate);
 
-    // ✅ Mark first day by index, last day by actual date string
-    const isEnd = (dateKey === endDateInput);
-    const code = (i === 0 || isEnd) ? "T" : "S";
+    if (dayOfWeek === "Sat" || dayOfWeek === "Sun") weekendCount++;
 
-    // Create table row
+    const isEnd = dateKey === endDateInput;
+    const code = i === 0 || isEnd ? "T" : "S";
+
     const row = document.createElement("tr");
     const dayCell = document.createElement("td");
     dayCell.textContent = dayOfWeek;
@@ -247,46 +237,55 @@ function generateSchedule() {
     scheduleTableBody.appendChild(row);
   }
 
-  // Turnaround calculations
+  // Turnaround calcs
   let turnaroundPercentValue = 0.25;
-  if (dayCount > 7 && dayCount <= 13) {
-    turnaroundPercentValue = 0.28;
-  } else if (dayCount > 13) {
-    turnaroundPercentValue = 0.3333;
-  }
+  if (dayCount > 7 && dayCount <= 13) turnaroundPercentValue = 0.28;
+  else if (dayCount > 13) turnaroundPercentValue = 0.3333;
 
   const turnaroundDaysInitial = dayCount * turnaroundPercentValue;
   const additionalTurnaround = 0.25 * weekendCount;
-  const finalTurnaroundDaysNotRounded = turnaroundDaysInitial + additionalTurnaround;
-  const finalTurnaroundDaysRounded = Math.round(finalTurnaroundDaysNotRounded);
+  const finalTurnaroundDaysNotRounded =
+    turnaroundDaysInitial + additionalTurnaround;
+  const finalTurnaroundDaysRounded = Math.round(
+    finalTurnaroundDaysNotRounded
+  );
   const totalTurnaroundDays = finalTurnaroundDaysRounded;
 
-  // Weekend bonus rate & contribution
   const weekendBonusRate = weekendCount > 0 ? 25 : 0;
   let weekendBonusContribution = 0;
   if (finalTurnaroundDaysNotRounded > 0) {
-    weekendBonusContribution = ((additionalTurnaround / finalTurnaroundDaysNotRounded) * 100).toFixed(2);
+    weekendBonusContribution = (
+      (additionalTurnaround / finalTurnaroundDaysNotRounded) *
+      100
+    ).toFixed(2);
   }
 
   // Update Results Summary
   document.getElementById("totalTripDays").textContent = dayCount;
   document.getElementById("totalWeekendDays").textContent = weekendCount;
-  document.getElementById("totalTurnaroundDays").textContent = totalTurnaroundDays;
+  document.getElementById("totalTurnaroundDays").textContent =
+    totalTurnaroundDays;
 
   // Update Current Date Model Display
-  document.getElementById("turnaroundPercent").textContent = (turnaroundPercentValue * 100).toFixed(2) + "%";
+  document.getElementById("turnaroundPercent").textContent =
+    (turnaroundPercentValue * 100).toFixed(2) + "%";
   document.getElementById("modelWeekendDays").textContent = weekendCount;
   document.getElementById("modelTripDays").textContent = dayCount;
-  document.getElementById("turnaroundDaysInitial").textContent = turnaroundDaysInitial.toFixed(2);
-  document.getElementById("turnaroundDaysNotRounded").textContent = finalTurnaroundDaysNotRounded.toFixed(2);
-  document.getElementById("weekendBonusRate").textContent = weekendBonusRate + "%";
-  document.getElementById("weekendBonusPercent").textContent = weekendBonusContribution + "%";
-  document.getElementById("turnaroundDaysRounded").textContent = finalTurnaroundDaysRounded;
+  document.getElementById("turnaroundDaysInitial").textContent =
+    turnaroundDaysInitial.toFixed(2);
+  document.getElementById("turnaroundDaysNotRounded").textContent =
+    finalTurnaroundDaysNotRounded.toFixed(2);
+  document.getElementById("weekendBonusRate").textContent =
+    weekendBonusRate + "%";
+  document.getElementById("weekendBonusPercent").textContent =
+    weekendBonusContribution + "%";
+  document.getElementById("turnaroundDaysRounded").textContent =
+    finalTurnaroundDaysRounded;
 
-  // === Human-readable math summary (auto-filled) ===
+  // Summary text
   try {
     const pctUsed = (turnaroundPercentValue * 100).toFixed(2);
-    const wbRate = weekendBonusRate; // already a % (0 or 25)
+    const wbRate = weekendBonusRate;
     const summaryHTML = `
       Trip length: <b>${dayCount}</b> day(s) with <b>${weekendCount}</b> weekend day(s).<br>
       Base turnaround: <b>${dayCount}</b> × <b>${pctUsed}%</b> = <b>${turnaroundDaysInitial.toFixed(2)}</b>.<br>
@@ -297,16 +296,16 @@ function generateSchedule() {
     if (summaryEl) {
       summaryEl.style.display = "block";
       summaryEl.innerHTML = summaryHTML;
-    } else {
-      console.warn("calcSummary element not found in DOM.");
     }
   } catch (e) {
     console.error("Failed to render summary:", e);
   }
 
-  // ✅ Append O-days starting from the calendar day AFTER the end date
+  // Append O-days after end date
   const turnaroundStartDate = new Date(
-    end.getFullYear(), end.getMonth(), end.getDate() + 1
+    end.getFullYear(),
+    end.getMonth(),
+    end.getDate() + 1
   );
   const scheduleTableBody2 = document.querySelector("#scheduleTable tbody");
   for (let j = 0; j < totalTurnaroundDays; j++) {
@@ -318,7 +317,10 @@ function generateSchedule() {
     const td = String(currentTurnaroundDate.getDate()).padStart(2, "0");
     const turnaroundDateKey = `${ty}-${tm}-${td}`;
 
-    let turnaroundDayOfWeek = (typeof dateMapping !== "undefined" && dateMapping[turnaroundDateKey]) ? dateMapping[turnaroundDateKey] : getDayOfWeek(currentTurnaroundDate);
+    let turnaroundDayOfWeek =
+      typeof dateMapping !== "undefined" && dateMapping[turnaroundDateKey]
+        ? dateMapping[turnaroundDateKey]
+        : getDayOfWeek(currentTurnaroundDate);
 
     const row = document.createElement("tr");
     const dayCell = document.createElement("td");
@@ -335,7 +337,7 @@ function generateSchedule() {
     scheduleTableBody2.appendChild(row);
   }
 
-  // If city input is provided, fetch weather
+  // Weather (online only)
   if (cityInput !== "") {
     fetchWeatherForecast(cityInput, startDateInput);
   } else {
@@ -343,65 +345,49 @@ function generateSchedule() {
   }
 }
 
-/**
- * Fallback: returns abbreviated day name
- */
-function getDayOfWeek(date) {
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  return days[date.getDay()];
-}
-
-/**
- * Fetch weather forecast for the given city and trip start date
- */
+/* ------------ Weather ------------ */
 function fetchWeatherForecast(city, tripStartDate) {
-  // Basic logic: if city has no comma, add ",US"
   let queryCity = city;
-  if (!queryCity.includes(",")) {
-    queryCity += ",US";
-  }
+  if (!queryCity.includes(",")) queryCity += ",US";
 
-  const apiKey = "996b65a5e617bf8f1c3c1e9116aa1ab6"; // Replace with your real API key
+  const apiKey = "996b65a5e617bf8f1c3c1e9116aa1ab6";
   const url = `https://api.openweathermap.org/data/2.5/forecast?q=${queryCity}&appid=${apiKey}&units=imperial`;
 
   fetch(url)
     .then(response => {
-      if (!response.ok) {
-        throw new Error("Weather data not available");
-      }
+      if (!response.ok) throw new Error("Weather data not available");
       return response.json();
     })
     .then(data => {
-      const forecastList = data.list;
-      // Filter forecasts for the exact trip start date
-      const filteredForecasts = forecastList.filter(item => item.dt_txt.startsWith(tripStartDate));
+      const forecastList = data.list || [];
+      const filteredForecasts = forecastList.filter(item =>
+        item.dt_txt.startsWith(tripStartDate)
+      );
 
       let weatherHTML = "";
       if (filteredForecasts.length > 0) {
-        // Choose the forecast closest to noon
-        let targetForecast = filteredForecasts.reduce((prev, curr) => {
-          return Math.abs(new Date(curr.dt_txt).getHours() - 12) <
-                 Math.abs(new Date(prev.dt_txt).getHours() - 12)
-                 ? curr
-                 : prev;
-        });
-        weatherHTML = `<h3>Weather Forecast for ${city} on ${tripStartDate}</h3>`;
-        weatherHTML += `<p>Temperature: ${targetForecast.main.temp}°F</p>`;
-        weatherHTML += `<p>Weather: ${targetForecast.weather[0].description}</p>`;
-        weatherHTML += `<p>Wind: ${targetForecast.wind.speed} mph</p>`;
+        const targetForecast = filteredForecasts.reduce((prev, curr) =>
+          Math.abs(new Date(curr.dt_txt).getHours() - 12) <
+          Math.abs(new Date(prev.dt_txt).getHours() - 12)
+            ? curr
+            : prev
+        );
+        weatherHTML = `<h3>Weather Forecast for ${city} on ${tripStartDate}</h3>
+          <p>Temperature: ${targetForecast.main.temp}°F</p>
+          <p>Weather: ${targetForecast.weather[0].description}</p>
+          <p>Wind: ${targetForecast.wind.speed} mph</p>`;
       } else {
         weatherHTML = `<p>No forecast data available for ${tripStartDate} in ${city}.</p>`;
       }
       document.getElementById("weatherForecast").innerHTML = weatherHTML;
     })
     .catch(error => {
-      document.getElementById("weatherForecast").innerHTML = `<p>Error fetching weather: ${error.message}</p>`;
+      document.getElementById("weatherForecast").innerHTML =
+        `<p>Error fetching weather: ${error.message}</p>`;
     });
 }
 
-/**
- * Reset function: Clears all inputs, tables, and error messages
- */
+/* ------------ Reset ------------ */
 function resetForm() {
   document.getElementById("startDate").value = "";
   document.getElementById("endDate").value = "";
@@ -423,5 +409,3 @@ function resetForm() {
   const summaryEl = document.getElementById("calcSummary");
   if (summaryEl) summaryEl.innerHTML = "";
 }
-
-
