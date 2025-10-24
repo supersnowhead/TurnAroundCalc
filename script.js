@@ -32,9 +32,18 @@ window.addEventListener("DOMContentLoaded", () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("./sw.js")
-      .then(reg => console.log("SW registered:", reg.scope))
-      .catch(err => console.error("SW registration failed:", err));
+      // append a version so the browser always fetches the latest sw.js
+      .register("./sw.js?v=5")
+      .then((reg) => console.log("SW registered:", reg.scope))
+      .catch((err) => console.error("SW registration failed:", err));
+
+    // If a fresh SW takes control, auto-reload once so you see the latest files
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (reloaded) return;
+      reloaded = true;
+      window.location.reload();
+    });
   });
 }
 
@@ -409,3 +418,4 @@ function resetForm() {
   const summaryEl = document.getElementById("calcSummary");
   if (summaryEl) summaryEl.innerHTML = "";
 }
+
