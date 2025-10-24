@@ -48,7 +48,9 @@ function parseDateInput(input) {
   return new Date(year, month - 1, day);
 }
 
-// Accessible, tap-friendly tooltips for rows that have a title=""
+/**
+ * Accessible, tap-friendly tooltips for rows that have a title=""
+ */
 function initRowTooltips() {
   const tables = [document.getElementById("resultsSummary"), document.getElementById("currentDateModel")];
   const allTooltips = [];
@@ -83,7 +85,6 @@ function initRowTooltips() {
       firstCell.appendChild(wrap);
 
       allTooltips.push({ btn, bubble });
-      let open = false;
 
       function openTip() {
         // close others
@@ -93,22 +94,20 @@ function initRowTooltips() {
         });
         bubble.classList.add("visible");
         btn.setAttribute("aria-expanded", "true");
-        open = true;
       }
 
       function closeTip() {
         bubble.classList.remove("visible");
         btn.setAttribute("aria-expanded", "false");
-        open = false;
       }
 
       // Toggle on click/tap
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
-        open ? closeTip() : openTip();
+        bubble.classList.contains("visible") ? closeTip() : openTip();
       });
 
-      // Open on hover (nice for desktop), close on leave
+      // Open on hover (desktop), close on leave
       btn.addEventListener("mouseenter", openTip);
       wrap.addEventListener("mouseleave", () => { if (!btn.matches(":focus")) closeTip(); });
 
@@ -117,7 +116,7 @@ function initRowTooltips() {
         if (e.key === "Escape") closeTip();
         if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
-          open ? closeTip() : openTip();
+          bubble.classList.contains("visible") ? closeTip() : openTip();
         }
       });
 
@@ -129,8 +128,12 @@ function initRowTooltips() {
   });
 }
 
-// Run once DOM is ready
-window.addEventListener("DOMContentLoaded", initRowTooltips);
+// Run once DOM is ready (and immediately if already parsed)
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", initRowTooltips);
+} else {
+  initRowTooltips();
+}
 
 /**
  * Main function to generate schedule, calculations, and weather forecast
@@ -177,12 +180,12 @@ function generateSchedule() {
     currentDate.setDate(start.getDate() + i);
 
     const y = currentDate.getFullYear();
-    const m = String(currentDate.getMonth() + 1).padStart(2, "0");
+       const m = String(currentDate.getMonth() + 1).padStart(2, "0");
     const d = String(currentDate.getDate()).padStart(2, "0");
     const dateKey = `${y}-${m}-${d}`;
 
     // Use dateMapping or fallback
-    let dayOfWeek = dateMapping[dateKey] || getDayOfWeek(currentDate);
+    let dayOfWeek = (typeof dateMapping !== "undefined" && dateMapping[dateKey]) ? dateMapping[dateKey] : getDayOfWeek(currentDate);
     if (dayOfWeek === "Sat" || dayOfWeek === "Sun") {
       weekendCount++;
     }
@@ -278,7 +281,7 @@ function generateSchedule() {
     const td = String(currentTurnaroundDate.getDate()).padStart(2, "0");
     const turnaroundDateKey = `${ty}-${tm}-${td}`;
 
-    let turnaroundDayOfWeek = dateMapping[turnaroundDateKey] || getDayOfWeek(currentTurnaroundDate);
+    let turnaroundDayOfWeek = (typeof dateMapping !== "undefined" && dateMapping[turnaroundDateKey]) ? dateMapping[turnaroundDateKey] : getDayOfWeek(currentTurnaroundDate);
 
     const row = document.createElement("tr");
     const dayCell = document.createElement("td");
@@ -383,4 +386,3 @@ function resetForm() {
   const summaryEl = document.getElementById("calcSummary");
   if (summaryEl) summaryEl.innerHTML = "";
 }
-
