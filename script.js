@@ -88,26 +88,50 @@ function initRowTooltips() {
 
       // === openTip function ===
     function openTip() {
-      // close others
-      allTooltips.forEach(t => {
-        t.bubble.classList.remove("visible");
-        t.bubble.classList.remove("align-right");
-        t.btn.setAttribute("aria-expanded", "false");
-      });
+  // close others
+  allTooltips.forEach(t => {
+    t.bubble.classList.remove("visible");
+    t.btn.setAttribute("aria-expanded", "false");
+  });
 
-      // show current one to measure it
-      bubble.classList.add("visible");
-      btn.setAttribute("aria-expanded", "true");
+  // show, measure, then position to viewport
+  bubble.classList.add("visible");
+  btn.setAttribute("aria-expanded", "true");
 
-      // viewport-fit: if it overflows on the right, flip align
-      const rect = bubble.getBoundingClientRect();
-      const padding = 8; // small margin from screen edge
-      if (rect.right > window.innerWidth - padding) {
-        bubble.classList.add("align-right");
-      } else {
-        bubble.classList.remove("align-right");
-      }
-    }
+  // Measure button in viewport coords
+  const padding = 8; // keep a little margin from the edges
+  const iconOffsetX = 22; // place bubble a bit to the right of the icon
+  const iconOffsetY = 10; // and a bit below it
+
+  const btnRect = btn.getBoundingClientRect();
+
+  // Temporarily reset any inline positions before measuring bubble size
+  bubble.style.left = "0px";
+  bubble.style.top = "0px";
+
+  const bubRect = bubble.getBoundingClientRect();
+  let left = btnRect.left + iconOffsetX;
+  let top  = btnRect.bottom + iconOffsetY;
+
+  // If it overflows right, pull it left
+  if (left + bubRect.width + padding > window.innerWidth) {
+    left = window.innerWidth - bubRect.width - padding;
+  }
+  // Keep from going off the left edge
+  if (left < padding) left = padding;
+
+  // If it overflows bottom, show above the icon
+  if (top + bubRect.height + padding > window.innerHeight) {
+    top = btnRect.top - bubRect.height - iconOffsetY;
+  }
+  // Keep from going off the top edge
+  if (top < padding) top = padding;
+
+  // Commit final position
+  bubble.style.left = `${Math.round(left)}px`;
+  bubble.style.top  = `${Math.round(top)}px`;
+}
+
       
       function closeTip() {
         bubble.classList.remove("visible");
@@ -399,4 +423,5 @@ function resetForm() {
   const summaryEl = document.getElementById("calcSummary");
   if (summaryEl) summaryEl.innerHTML = "";
 }
+
 
