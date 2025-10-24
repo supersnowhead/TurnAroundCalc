@@ -348,9 +348,9 @@ body.dark-mode #calcSummary.calc-summary b { color: #fff; }
 
 .help-tip-btn {
   appearance: none;
-  border: 0;
-  background: #4CAF50;      /* matches your green vibe */
-  color: #fff;
+  border: 1px solid rgba(76,175,80,.45);
+  background: rgba(76,175,80,.18);  /* softer, pale green */
+  color: #2e7d32;                   /* readable but subtle */
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -360,29 +360,45 @@ body.dark-mode #calcSummary.calc-summary b { color: #fff; }
   cursor: pointer;
   padding: 0;
 }
-
+.help-tip-btn:hover,
 .help-tip-btn:focus {
-  outline: 2px solid #222;
+  background: rgba(76,175,80,.28);
+  outline: 2px solid transparent;
   outline-offset: 2px;
 }
 
 .tooltip-bubble {
   position: absolute;
-  left: 0;
-  top: 22px;                 /* drop below the (i) button */
+  left: 0;                 /* default: align left under the (i) */
+  top: 22px;
   z-index: 1000;
-  max-width: 260px;
+  /* dynamic sizing + wrapping */
+  box-sizing: border-box;
+  max-width: min(360px, 90vw);
+  width: max-content;      /* grows with content up to max-width */
+  min-width: 200px;        /* keeps a nice shape for short text */
+  white-space: normal;
+  overflow-wrap: anywhere; /* wrap long words/URLs if needed */
+  word-break: break-word;
+
   background: #333;
   color: #fff;
-  padding: 8px 10px;
+  padding: 10px 12px;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0,0,0,.25);
   font-weight: normal;
   text-align: left;
+
   opacity: 0;
   transform: translateY(-4px);
   pointer-events: none;
   transition: opacity .15s ease, transform .15s ease;
+}
+
+/* If we need to flip to the right edge to stay in viewport */
+.tooltip-bubble.align-right {
+  left: auto;
+  right: 0;
 }
 
 .tooltip-bubble.visible {
@@ -391,18 +407,19 @@ body.dark-mode #calcSummary.calc-summary b { color: #fff; }
   pointer-events: auto;
 }
 
-/* Keep colors readable in dark mode */
+/* Dark mode */
 body.dark-mode .tooltip-bubble {
   background: #222;
   color: #eee;
   box-shadow: 0 4px 12px rgba(0,0,0,.5);
 }
 
-/* Keep the header cells tidy if an (i) appears */
+/* Keep the left label cells tidy */
 #resultsSummary td:first-child,
 #currentDateModel td:first-child {
   white-space: nowrap;
 }
+
 
 /* Updated Color-Coded Classes for Table Cells with Lighter Colors and Bold Text */
 .T {
@@ -448,6 +465,7 @@ body.dark-mode .tooltip-bubble {
     font-size: 1.2rem;
   }
 }
+
 
 
 
