@@ -86,16 +86,29 @@ function initRowTooltips() {
 
       allTooltips.push({ btn, bubble });
 
-      function openTip() {
-        // close others
-        allTooltips.forEach(t => {
-          t.bubble.classList.remove("visible");
-          t.btn.setAttribute("aria-expanded", "false");
-        });
-        bubble.classList.add("visible");
-        btn.setAttribute("aria-expanded", "true");
-      }
+      // === openTip function ===
+    function openTip() {
+      // close others
+      allTooltips.forEach(t => {
+        t.bubble.classList.remove("visible");
+        t.bubble.classList.remove("align-right");
+        t.btn.setAttribute("aria-expanded", "false");
+      });
 
+      // show current one to measure it
+      bubble.classList.add("visible");
+      btn.setAttribute("aria-expanded", "true");
+
+      // viewport-fit: if it overflows on the right, flip align
+      const rect = bubble.getBoundingClientRect();
+      const padding = 8; // small margin from screen edge
+      if (rect.right > window.innerWidth - padding) {
+        bubble.classList.add("align-right");
+      } else {
+        bubble.classList.remove("align-right");
+      }
+    }
+      
       function closeTip() {
         bubble.classList.remove("visible");
         btn.setAttribute("aria-expanded", "false");
@@ -386,3 +399,4 @@ function resetForm() {
   const summaryEl = document.getElementById("calcSummary");
   if (summaryEl) summaryEl.innerHTML = "";
 }
+
